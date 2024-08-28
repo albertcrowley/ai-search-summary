@@ -4,7 +4,7 @@ import html2text
 import json
 
 def count_tokens(prompt, model="llama2"):
-    url = "http://localhost:11434/api/tokenize"
+    url = "http://192.168.68.57:11434/api/tokenize"
 
     data = {
         "model": model,
@@ -21,12 +21,10 @@ def count_tokens(prompt, model="llama2"):
 
 
 
-print ("hi there")
-exit(0)
 
 
 
-client = Client(host='http://localhost:11434')
+client = Client(host='http://192.168.68.57:11434')
 
 template = """Use the following web page export to answer the question at the end.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
