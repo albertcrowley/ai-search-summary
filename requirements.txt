@@ -10,3 +10,12 @@ duckduckgo-search
 exa_py
 python-dotenv
 
+
+boto3
+langchain
+langchain-community
+streamlit
+pillow
+faiss-cpu
+
+getpass
