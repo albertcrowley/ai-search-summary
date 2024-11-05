@@ -2,20 +2,19 @@ ollama
 requests
 beautifulsoup4
 html2text
-crewai
-crewai_tools
+#crewai
+#crewai_tools
 langchain_ollama
-duckduckgo-search
+#duckduckgo-search
+flask
 
-exa_py
+#exa_py
 python-dotenv
 
 
 boto3
-langchain
-langchain-community
-streamlit
-pillow
-faiss-cpu
-
-getpass
+#langchain
+#langchain-community
+#streamlit
+#pillow
+#faiss-cpu
