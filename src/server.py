@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import ollama
 import logging
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -52,9 +52,8 @@ def summarize_text(text):
     """Use Ollama to summarize the text."""
     try:
         prompt = f"Please provide a concise summary of the following text:\n\n{text}\n\nSummary:"
-        logger.info(prompt)
         response = ollama.generate(
-            model='llama3.2:1b',  # or your preferred model
+            model='llama3.2',  # or your preferred model
             prompt=prompt
         )
         return response['response']
@@ -63,16 +62,14 @@ def summarize_text(text):
         raise
 
 
-@app.route('/summarize', methods=['POST'])
-def summarize_url():
-    """Endpoint to accept URL and return summary."""
+def process_summary_request(url):
+    """Common processing logic for both GET and POST requests."""
     try:
-        data = request.get_json()
-
-        if not data or 'url' not in data:
+        if not url:
             return jsonify({'error': 'No URL provided'}), 400
 
-        url = data['url']
+        # URL decode in case it's encoded
+        url = unquote(url)
 
         if not is_valid_url(url):
             return jsonify({'error': 'Invalid URL format'}), 400
@@ -96,6 +93,18 @@ def summarize_url():
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
+
+
+@app.route('/summarize', methods=['GET', 'POST'])
+def summarize_url():
+    """Endpoint to accept URL and return summary via GET or POST."""
+    if request.method == 'POST':
+        data = request.get_json()
+        url = data.get('url') if data else None
+    else:  # GET method
+        url = request.args.get('url')
+
+    return process_summary_request(url)
 
 
 if __name__ == '__main__':
