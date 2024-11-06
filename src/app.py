@@ -1,9 +1,15 @@
+import os
+
 from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 import ollama
 import logging
 from urllib.parse import urlparse, unquote
+
+
+# if you need a custom host, set the env var or set it here
+#os.environ["OLLAMA_HOST"] = 'http://localhost:11434'
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -51,9 +57,15 @@ def extract_text_from_url(url):
 def summarize_text(text):
     """Use Ollama to summarize the text."""
     try:
+        print ("setting base url to " + os.getenv("OLLAMA_HOST"))
+
+        client = ollama.Client()
+        #client = ollama.Client(base_url=OLLAMA_HOST)
+
         prompt = f"Please provide a concise summary of the following text:\n\n{text}\n\nSummary:"
-        response = ollama.generate(
-            model='llama3.2',  # or your preferred model
+        print (prompt)
+        response = client.generate(
+            model='llama3.2:1b',  # or your preferred model
             prompt=prompt
         )
         return response['response']
