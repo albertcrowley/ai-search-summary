@@ -54,9 +54,16 @@ def extract_text_from_url(url):
         raise
 
 
+summary_cache = {}
+
+
 def summarize_text(text):
     """Use Ollama to summarize the text."""
     try:
+        if text in summary_cache:
+            logger.info("Returning cached summary for text.")
+            return summary_cache[text]
+
         print ("setting base url to " + os.getenv("OLLAMA_HOST"))
 
         client = ollama.Client()
@@ -68,7 +75,9 @@ def summarize_text(text):
             model='llama3.2:1b',  # or your preferred model
             prompt=prompt
         )
-        return response['response']
+        summary = response['response']
+        summary_cache[text] = summary  # Cache the summary
+        return summary
     except Exception as e:
         logger.error(f"Error generating summary: {str(e)}")
         raise
